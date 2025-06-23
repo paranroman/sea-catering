@@ -7,7 +7,7 @@ const Navbar = () => {
     const [showNav, setShowNav] = useState(true);
     const [lastScroll, setLastScroll] = useState(0);
     const [scrolled, setScrolled] = useState(false);
-    const [menuOpen, setMenuOpen] = useState(false); // 🌸 New state for mobile menu toggle
+    const [menuOpen, setMenuOpen] = useState(false); // New state for mobile menu toggle
 
     const navLinks = [
         { href: '#home', label: 'Home' },
@@ -29,7 +29,7 @@ const Navbar = () => {
 
     const handleLinkClick = (href) => {
         setActiveLink(href);
-        setMenuOpen(false); // 💖 Close menu after clicking
+        setMenuOpen(false); //  Close menu after clicking
     };
 
     return (
