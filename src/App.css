@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=DM+Sans:wght@400;500&family=Josefin+Sans:wght@400;700&display=swap');
+
+body {
+    font-family: 'DM Sans', sans-serif;
+}
+
+.logo-font {
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+.dm-font {
+    font-family: 'DM Sans', sans-serif;
+}
+
+.cabin-font {
+    font-family: 'Cabin', sans-serif;
+}
