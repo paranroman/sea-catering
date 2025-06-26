@@ -5,6 +5,7 @@ import Home from './pages/home/Home';
 import Menu from './pages/menu/Menu';
 import Subscription from './pages/subscription/Subscription';
 import Contact from './pages/contact/Contact';
+import './App.css';
 
 export const App = () => {
     return (

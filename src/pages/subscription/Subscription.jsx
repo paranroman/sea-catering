@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { textVariant, fadeIn } from '../../utils/motion';
 import SubscriptionForm from './components/SubscriptionForm';
 
+
 const Subscription = () => {
     return (
         <section className="min-h-screen px-6 py-24 lg:px-32 bg-[#bfa3d1]">
