@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaStar, FaRegStar, FaStarHalfAlt } from 'react-icons/fa';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
-import { fadeIn } from '../../utils/motion';
+import { fadeIn } from '../../../utils/motion';
 
 const Testimonial = () => {
     const [testimonials, setTestimonials] = useState([
@@ -13,7 +13,7 @@ const Testimonial = () => {
         },
         {
             name: 'Deddy Corbuzier',
-            message: 'SEA Catering membuat OCD (Obsessive Corbuzier Diet) ku jadi seperti kacang. ',
+            message: 'SEA Catering membuat OCD (Obsessive Corbuzier Diet) ku jadi seperti kacang.',
             rating: 4.5,
         },
         {
@@ -22,17 +22,14 @@ const Testimonial = () => {
             rating: 5,
         },
     ]);
+
     const [currentIndex, setCurrentIndex] = useState(0);
     const [form, setForm] = useState({ name: '', message: '', rating: 0 });
     const [hoverRating, setHoverRating] = useState(0);
     const [selectedRating, setSelectedRating] = useState(0);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-        }, 5000);
-        return () => clearInterval(interval);
-    }, [testimonials]);
+    const [direction, setDirection] = useState(1);
+    const [messageLength, setMessageLength] = useState(0);
+    const [nameLength, setNameLength] = useState(0);
 
     const renderStars = (rating) => {
         const stars = [];
@@ -51,32 +48,56 @@ const Testimonial = () => {
         return stars;
     };
 
+    const handlePrev = () => {
+        setDirection(-1);
+        setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    };
+
+    const handleNext = () => {
+        setDirection(1);
+        setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    };
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        const newReview = {
-            ...form
-        };
+        const newReview = { ...form };
         setTestimonials((prev) => [...prev, newReview]);
         setCurrentIndex(testimonials.length);
         setForm({ name: '', message: '', rating: 0 });
         setHoverRating(0);
         setSelectedRating(0);
-
     };
 
-    const handlePrev = () => {
-        setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-    };
-
-    const handleNext = () => {
-        setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    const variants = {
+        enter: (dir) => ({
+            x: dir > 0 ? 150 : -150,
+            opacity: 0,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+        }),
+        center: {
+            x: 0,
+            opacity: 1,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+        },
+        exit: (dir) => ({
+            x: dir > 0 ? -150 : 150,
+            opacity: 0,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+        }),
     };
 
     return (
-        <section
-            id="testimonial"
-            className="w-full min-h-screen bg-[#bfa3d1] text-white px-6 lg:px-32 py-24"
-        >
+        <section id="testimonial" className="w-full min-h-screen bg-[#bfa3d1] text-white px-6 lg:px-32 py-24">
             <motion.h2
                 variants={fadeIn('up', 0.1)}
                 initial="hidden"
@@ -87,23 +108,24 @@ const Testimonial = () => {
                 Customer Testimonial
             </motion.h2>
 
-
             <div className="flex flex-col md:flex-row items-start justify-between gap-12">
                 {/* Carousel */}
                 <motion.div
                     variants={fadeIn('left', 0.2)}
                     initial="hidden"
                     whileInView="show"
-                    className="w-full md:w-1/2 bg-white text-[#512260] p-6 rounded-2xl shadow-xl relative"
+                    className="w-full md:w-1/2 bg-white text-[#512260] p-6 rounded-2xl shadow-xl relative overflow-hidden min-h-[260px]"
                 >
-                    <AnimatePresence mode="wait">
+                    <AnimatePresence custom={direction} initial={false}>
                         <motion.div
                             key={currentIndex}
-                            initial={{ x: 100, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            exit={{ x: -100, opacity: 0 }}
-                            transition={{ duration: 0.5 }}
-                            className="min-h-[220px] flex flex-col items-center justify-center text-center"
+                            custom={direction}
+                            variants={variants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            transition={{ duration: 0.4, ease: 'easeInOut' }}
+                            className="min-h-[220px] flex flex-col items-center justify-center text-center px-4"
                         >
                             <p className="text-2xl md:text-3xl font-medium leading-relaxed max-w-[90%] break-words whitespace-pre-wrap">
                                 "{testimonials[currentIndex].message}"
@@ -113,15 +135,16 @@ const Testimonial = () => {
                         </motion.div>
                     </AnimatePresence>
 
+
                     {/* Arrow Navigation */}
-                    <div className="absolute top-1/2 left-0 transform -translate-y-1/2 p-2">
+                    <div className="absolute top-1/2 left-0 transform -translate-y-1/2 p-2 z-10">
                         <MdArrowBackIos
                             size={30}
                             className="cursor-pointer text-[#512260] hover:text-[#381344]"
                             onClick={handlePrev}
                         />
                     </div>
-                    <div className="absolute top-1/2 right-0 transform -translate-y-1/2 p-2">
+                    <div className="absolute top-1/2 right-0 transform -translate-y-1/2 p-2 z-10">
                         <MdArrowForwardIos
                             size={30}
                             className="cursor-pointer text-[#512260] hover:text-[#381344]"
@@ -146,10 +169,19 @@ const Testimonial = () => {
                             type="text"
                             name="name"
                             value={form.name}
-                            onChange={(e) => setForm({ ...form, name: e.target.value })}
+                            maxLength={25}
+                            onChange={(e) => {
+                                setForm({ ...form, name: e.target.value });
+                                setNameLength(e.target.value.length);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') e.preventDefault();
+                            }}
                             className="w-full p-3 rounded-md border border-gray-300"
                             required
                         />
+                        <div className="text-sm text-right text-gray-500 mt-1">{nameLength} / 25</div>
+
                     </div>
 
                     <div>
@@ -157,11 +189,19 @@ const Testimonial = () => {
                         <textarea
                             name="message"
                             value={form.message}
-                            onChange={(e) => setForm({ ...form, message: e.target.value })}
+                            maxLength={250}
+                            onChange={(e) => {
+                                setForm({ ...form, message: e.target.value });
+                                setMessageLength(e.target.value.length);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') e.preventDefault();
+                            }}
                             rows={4}
-                            className="w-full p-3 rounded-md border border-gray-300"
+                            className="w-full p-3 rounded-md border border-gray-300 resize-none"
                             required
-                        ></textarea>
+                        />
+                        <div className="text-sm text-right text-gray-500 mt-1">{messageLength} / 250</div>
                     </div>
 
                     <div>
@@ -195,7 +235,6 @@ const Testimonial = () => {
                                             }}
                                         >
                                             <FaStar size={48} className="text-gray-300" />
-
                                             {(isFull || isHalf) && (
                                                 <div
                                                     className="absolute top-0 left-0 h-full overflow-hidden"
@@ -209,8 +248,8 @@ const Testimonial = () => {
                                 })}
                             </div>
                             <span className="text-[#512260] text-xl font-semibold">
-                                {selectedRating || form.rating} / 5
-                            </span>
+                {selectedRating || form.rating} / 5
+              </span>
                         </div>
                     </div>
 

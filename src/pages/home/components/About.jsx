@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { fadeIn } from '../../utils/motion';
+import { fadeIn } from '../../../utils/motion';
 
 const About = () => {
     return (
         <section
             id="about"
-            className="relative w-full min-h-screen bg-[#f9f6fa] flex flex-col items-center px-6 md:px-12 lg:px-24 pt-32 pb-24"
+            className="relative w-full min-h-screen bg-[#f3eaf7] flex flex-col items-center px-6 md:px-12 lg:px-24 pt-32 pb-24"
         >
             {/* Title */}
             <motion.h2

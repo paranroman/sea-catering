@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { fadeIn } from '../../utils/motion';
+import { fadeIn } from '../../../utils/motion';
 
-const Contact = () => {
+const ContactUs = () => {
     return (
         <section
             id="contactUs"
-            className="w-full h-[33vh] bg-[#f9f6fa] flex items-center justify-center px-6"
+            className="w-full h-[33vh] bg-[#f3eaf7] flex items-center justify-center px-6"
         >
             <div className="text-center space-y-3">
                 <motion.h2
@@ -20,7 +20,7 @@ const Contact = () => {
                 </motion.h2>
 
                 <motion.p
-                    variants={fadeIn('up', 0.3)}
+                    variants={fadeIn('up', 0.2)}
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: false, amount: 0.6 }}
@@ -30,7 +30,7 @@ const Contact = () => {
                 </motion.p>
 
                 <motion.p
-                    variants={fadeIn('up', 0.4)}
+                    variants={fadeIn('up', 0.2)}
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: false, amount: 0.6 }}
@@ -43,4 +43,4 @@ const Contact = () => {
     );
 };
 
-export default Contact;
+export default ContactUs;

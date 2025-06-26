@@ -1,8 +1,8 @@
 import React from 'react';
-import Hero from './Hero';
-import About from './About';
-import Testimonial from './Testimonial';
-import Contact from './Contact';
+import Hero from './components/Hero';
+import About from './components/About';
+import Testimonial from './components/Testimonial';
+import ContactUs from './components/ContactUs.jsx';
 
 const Home = () => {
     return (
@@ -10,7 +10,7 @@ const Home = () => {
             <Hero />
             <About />
             <Testimonial />
-            <Contact />
+            <ContactUs />
         </>
     );
 };
