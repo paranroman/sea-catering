@@ -103,7 +103,7 @@ const Testimonial = () => {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: false, amount: 0.4 }}
-                className="text-center text-[3rem] md:text-[5rem] lg:text-[6rem] font-bold text-white josefin-sans leading-tight mb-20"
+                className="text-center text-[3rem] md:text-[5rem] lg:text-[6rem] font-bold text-[#512260] josefin-sans leading-tight mb-20"
             >
                 Customer Testimonial
             </motion.h2>

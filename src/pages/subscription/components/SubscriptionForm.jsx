@@ -1,8 +1,10 @@
 import React from 'react';
-import { FaLeaf, FaDrumstickBite, FaCrown } from 'react-icons/fa';
+import { FaLeaf, FaDrumstickBite, FaCrown, FaMoon } from 'react-icons/fa';
 import useSubscriptionForm from '../hooks/useSubscriptionForm';
-import { GiCook, GiMeal, GiKnifeFork } from 'react-icons/gi';
 import { HiArrowNarrowRight } from 'react-icons/hi';
+import { MdWbSunny } from 'react-icons/md';
+import { WiDaySunny } from 'react-icons/wi';
+
 
 const SubscriptionForm = () => {
     const {
@@ -16,12 +18,18 @@ const SubscriptionForm = () => {
         handleDeliveryRangeEnd,
     } = useSubscriptionForm();
 
-    const meals = ['Breakfast', 'Lunch', 'Dinner'];
+    const mealOptions = [
+        { name: 'Breakfast', icon: <MdWbSunny className="text-3xl mb-1 text-[#512260]" /> },
+        { name: 'Lunch', icon: <WiDaySunny className="text-3xl mb-1 text-[#512260]" /> },
+        { name: 'Dinner', icon: <FaMoon className="text-3xl mb-1 text-[#512260]" /> },
+    ];
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-lg space-y-8 text-[#512260] font-dm-sans">
-            {/* Full Name & Phone */}
+        <form
+            onSubmit={handleSubmit}
+            className="bg-white p-8 rounded-xl shadow-lg space-y-8 text-[#512260] font-dm-sans mx-auto max-w-3xl"
+        >{/* Full Name & Phone */}
             <div className="grid md:grid-cols-2 gap-6">
                 <div>
                     <label className="block font-semibold text-lg mb-1">Full Name*</label>
@@ -55,41 +63,61 @@ const SubscriptionForm = () => {
                 <label className="block font-semibold text-lg mb-3">Plan*</label>
                 <div className="flex justify-around text-center gap-3">
                     <label className="cursor-pointer">
-                        <input type="radio" name="plan" value="Diet" onChange={handleChange} className="hidden" checked={form.plan === 'Diet'} />
-                        <div className={`p-4 rounded-xl border-2 ${form.plan === 'Diet' ? 'border-[#512260]' : 'border-gray-300'}`}>
+                        <input
+                            type="radio"
+                            name="plan"
+                            value="Diet"
+                            onChange={handleChange}
+                            className="hidden"
+                            checked={form.plan === 'Diet'}
+                        />
+                        <div className={`w-32 p-4 rounded-xl border-2 ${form.plan === 'Diet' ? 'border-[#512260]' : 'border-gray-300'} transition duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-md`}>
                             <FaLeaf className="mx-auto text-3xl mb-2 text-[#512260]" />
                             <span className="font-semibold">Diet Plan</span>
                             <p className="text-sm">Rp30.000</p>
                         </div>
                     </label>
+
                     <label className="cursor-pointer">
-                        <input type="radio" name="plan" value="Protein" onChange={handleChange} className="hidden" checked={form.plan === 'Protein'} />
-                        <div className={`p-4 rounded-xl border-2 ${form.plan === 'Protein' ? 'border-[#512260]' : 'border-gray-300'}`}>
+                        <input
+                            type="radio"
+                            name="plan"
+                            value="Protein"
+                            onChange={handleChange}
+                            className="hidden"
+                            checked={form.plan === 'Protein'}
+                        />
+                        <div className={`w-32 p-4 rounded-xl border-2 ${form.plan === 'Protein' ? 'border-[#512260]' : 'border-gray-300'} transition duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-md`}>
                             <FaDrumstickBite className="mx-auto text-3xl mb-2 text-[#512260]" />
                             <span className="font-semibold">Protein Plan</span>
                             <p className="text-sm">Rp40.000</p>
                         </div>
                     </label>
+
                     <label className="cursor-pointer">
-                        <input type="radio" name="plan" value="Royal" onChange={handleChange} className="hidden" checked={form.plan === 'Royal'} />
-                        <div className={`p-4 rounded-xl border-2 ${form.plan === 'Royal' ? 'border-[#512260]' : 'border-gray-300'}`}>
+                        <input
+                            type="radio"
+                            name="plan"
+                            value="Royal"
+                            onChange={handleChange}
+                            className="hidden"
+                            checked={form.plan === 'Royal'}
+                        />
+                        <div className={`w-32 p-4 rounded-xl border-2 ${form.plan === 'Royal' ? 'border-[#512260]' : 'border-gray-300'} transition duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-md`}>
                             <FaCrown className="mx-auto text-3xl mb-2 text-[#512260]" />
                             <span className="font-semibold">Royal Plan</span>
                             <p className="text-sm">Rp60.000</p>
                         </div>
                     </label>
                 </div>
+
             </div>
 
             {/* Meal Type */}
             <div>
                 <label className="block font-semibold text-lg mb-3">Meal Type*</label>
                 <div className="flex justify-around flex-wrap gap-4">
-                    {[
-                        { name: 'Breakfast', icon: <GiCook className="text-2xl mb-1 text-[#512260]" /> },
-                        { name: 'Lunch', icon: <GiMeal className="text-2xl mb-1 text-[#512260]" /> },
-                        { name: 'Dinner', icon: <GiKnifeFork className="text-2xl mb-1 text-[#512260]" /> }
-                    ].map(({ name, icon }) => (
+                    {mealOptions.map(({ name, icon }) => (
                         <label key={name} className="cursor-pointer text-center">
                             <input
                                 type="checkbox"
@@ -99,7 +127,7 @@ const SubscriptionForm = () => {
                                 onChange={handleCheckbox}
                                 className="hidden"
                             />
-                            <div className={`p-4 border-2 rounded-xl w-28 ${form.meals.includes(name) ? 'border-[#512260]' : 'border-gray-300'}`}>
+                            <div className={`p-4 border-2 rounded-xl w-28 ${form.meals.includes(name) ? 'border-[#512260]' : 'border-gray-300'} transition duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-md`}>
                                 <div className="flex justify-center">{icon}</div>
                                 <span className="font-medium">{name}</span>
                             </div>

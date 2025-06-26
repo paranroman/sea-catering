@@ -17,3 +17,7 @@ body {
 .cabin-font {
     font-family: 'Cabin', sans-serif;
 }
+
+html {
+    overflow-y: scroll;
+}

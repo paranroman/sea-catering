@@ -16,7 +16,7 @@ const Hero = () => {
                         variants={textVariant(0.2)}
                         initial="hidden"
                         whileInView="show"
-                        className="text-6xl sm:text-7xl lg:text-[6rem] font-bold text-white logo-font leading-tight tracking-wide"
+                        className="text-6xl sm:text-7xl lg:text-[6rem] font-bold text-[#512260] logo-font leading-tight tracking-wide"
                     >
                         SEA<br />Catering
                     </motion.h1>
@@ -25,7 +25,7 @@ const Hero = () => {
                         variants={fadeIn('up', 0.3)}
                         initial="hidden"
                         whileInView="show"
-                        className="text-3xl sm:text-4xl lg:text-5xl text-white cabin-font font-bold tracking-wide"
+                        className="text-3xl sm:text-4xl lg:text-5xl text-[#512260] cabin-font font-bold tracking-wide"
                     >
                         Healthy Meals, Anytime, Anywhere.
                     </motion.h2>
@@ -35,7 +35,7 @@ const Hero = () => {
                     variants={fadeIn('up', 0.4)}
                     initial="hidden"
                     whileInView="show"
-                    className="mt-8 text-white text-xl sm:text-2xl lg:text-2xl dm-font max-w-xl leading-relaxed"
+                    className="mt-8 text-[#512260] text-xl sm:text-2xl lg:text-2xl dm-font max-w-xl leading-relaxed"
                 >
                     SEA Catering is a deliciously customizable healthy meal service, delivering fresh and nutritious food straight to your doorstep across Indonesia. Let’s eat better together!
                 </motion.p>

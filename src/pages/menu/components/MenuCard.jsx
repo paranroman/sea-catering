@@ -1,8 +1,15 @@
-import React from 'react';
+import React from "react";
+import { motion } from "framer-motion";
 
-const MenuCard = ({ plan, onSelect }) => {
+const MenuCard = ({ plan, onSelect, index }) => {
     return (
-        <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300">
+        <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
+            className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 hover:-translate-y-1 hover:scale-[1.02]"
+        >
             <img src={plan.image} alt={plan.name} className="w-full h-48 object-cover" />
             <div className="p-4">
                 <h3 className="text-xl font-bold text-[#512260]">{plan.name}</h3>
@@ -16,7 +23,7 @@ const MenuCard = ({ plan, onSelect }) => {
                     See More Details
                 </button>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
