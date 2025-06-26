@@ -25,6 +25,7 @@ const Testimonial = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [form, setForm] = useState({ name: '', message: '', rating: 0 });
     const [hoverRating, setHoverRating] = useState(0);
+    const [selectedRating, setSelectedRating] = useState(0);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -32,8 +33,6 @@ const Testimonial = () => {
         }, 5000);
         return () => clearInterval(interval);
     }, [testimonials]);
-
-    const [selectedRating, setSelectedRating] = useState(0);
 
     const renderStars = (rating) => {
         const stars = [];
@@ -55,9 +54,7 @@ const Testimonial = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const newReview = {
-            name: form.name,
-            message: form.message,
-            rating: form.rating,
+            ...form
         };
         setTestimonials((prev) => [...prev, newReview]);
         setCurrentIndex(testimonials.length);
@@ -197,10 +194,8 @@ const Testimonial = () => {
                                                 setForm({ ...form, rating: value });
                                             }}
                                         >
-                                            {/* Base gray star */}
                                             <FaStar size={48} className="text-gray-300" />
 
-                                            {/* Fill yellow based on full or half */}
                                             {(isFull || isHalf) && (
                                                 <div
                                                     className="absolute top-0 left-0 h-full overflow-hidden"
@@ -217,10 +212,6 @@ const Testimonial = () => {
                                 {selectedRating || form.rating} / 5
                             </span>
                         </div>
-
-
-
-
                     </div>
 
                     <button

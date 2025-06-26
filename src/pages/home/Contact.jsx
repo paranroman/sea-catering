@@ -5,7 +5,7 @@ import { fadeIn } from '../../utils/motion';
 const Contact = () => {
     return (
         <section
-            id="contact"
+            id="contactUs"
             className="w-full h-[33vh] bg-[#f9f6fa] flex items-center justify-center px-6"
         >
             <div className="text-center space-y-3">
