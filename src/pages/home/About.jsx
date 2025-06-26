@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { fadeIn } from '../utils/motion';
+import { fadeIn } from '../../utils/motion';
 
 const About = () => {
     return (

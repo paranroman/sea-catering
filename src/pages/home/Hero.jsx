@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { fadeIn, textVariant } from '../utils/motion';
-import truckImage from '../assets/truk-sea-catering.png';
+import { fadeIn, textVariant } from '../../utils/motion';
+import truckImage from '../../assets/truk-sea-catering.png';
 
 const Hero = () => {
     return (

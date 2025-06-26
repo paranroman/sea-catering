@@ -1,15 +1,13 @@
 import React from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import About from './components/About'
+import Home from "./pages/home/Home.jsx";
 
 export const App = () => {
     return (
         <>
             <Navbar />
-            <Hero />
-            <About />
+            <Home   />
         </>
     )
 }
