@@ -22,11 +22,16 @@ const Menu = () => {
 
     return (
         <motion.section
-            className="min-h-screen w-full px-6 py-24 lg:px-32 bg-[#bfa3d1] relative overflow-hidden"
+            className="min-h-screen w-full px-6 py-24 lg:px-32 bg-[radial-gradient(circle_at_center,_#f4e7fa,_#e8d4f0,_#bfa3d1)] relative overflow-hidden text-[#512260]"
             variants={staggerContainer(0.2, 0.1)}
             initial="hidden"
             animate="show"
         >
+
+        <div className="absolute -top-24 -left-20 w-72 h-72 bg-white/20 rounded-full blur-3xl z-0" />
+            <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-2xl z-0" />
+
+
             <motion.h2
                 className="text-4xl md:text-5xl font-bold text-center text-[#512260] mb-16"
                 variants={textVariant(0.1)}
@@ -43,6 +48,7 @@ const Menu = () => {
             {isOpen && selectedPlan && (
                 <MealPlanModal plan={selectedPlan} onClose={handleClose} />
             )}
+
         </motion.section>
     );
 };

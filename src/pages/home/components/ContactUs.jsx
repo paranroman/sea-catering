@@ -7,7 +7,7 @@ const ContactUs = () => {
     return (
         <section
             id="contactUs"
-            className="w-full min-h-[45vh] bg-gradient-to-b from-[#d6bfe2] via-[#e8d7ee] to-[#f3eaf7] px-6 py-20 flex items-center justify-center"
+            className="w-full min-h-[45vh] bg-gradient-to-b from-[#d1b8df] via-[#dac6e6] to-[#e8daef] px-6 py-20 flex items-center justify-center"
         >
             <motion.div
                 variants={fadeIn('up', 0.2)}

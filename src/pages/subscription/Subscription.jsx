@@ -1,31 +1,33 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { textVariant, fadeIn } from '../../utils/motion';
+import { textVariant, fadeIn, staggerContainer } from '../../utils/motion';
 import SubscriptionForm from './components/SubscriptionForm';
-
 
 const Subscription = () => {
     return (
-        <section className="min-h-screen px-6 py-24 lg:px-32 bg-[#bfa3d1]">
+        <motion.section
+            className="min-h-screen w-full px-6 py-24 lg:px-32 relative overflow-hidden"
+            variants={staggerContainer(0.2, 0.1)}
+            initial="hidden"
+            animate="show"
+        >
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#f4e7fa,_#e8d4f0,_#bfa3d1)] -z-10" />
+
             <motion.h2
                 variants={textVariant(0.2)}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.3 }}
-                className="text-4xl font-bold text-center text-[#512260] mb-12"
+                className="text-4xl md:text-5xl font-bold text-center text-[#512260] mb-16"
             >
                 Subscribe to a Meal Plan
             </motion.h2>
 
+            {/* Form */}
             <motion.div
                 variants={fadeIn("up", 0.3)}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.2 }}
+                className="z-10"
             >
                 <SubscriptionForm />
             </motion.div>
-        </section>
+        </motion.section>
     );
 };
 

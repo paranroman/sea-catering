@@ -108,8 +108,9 @@ const Testimonial = () => {
     return (
         <section
             id="testimonial"
-            className="w-full min-h-screen bg-gradient-to-b from-[#f3eaf7] via-[#e8d7ee] to-[#d6bfe2] px-6 lg:px-24 py-24 text-[#512260] font-cabin"
+            className="relative z-10 w-full min-h-screen bg-gradient-to-b from-[#e3d0ed] via-[#d8c3e5] to-[#d1b8df] px-6 lg:px-24 py-24 text-[#512260] font-cabin"
         >
+
             {/* Title */}
             <motion.h2
                 variants={fadeIn('up', 0.1)}

@@ -3,8 +3,8 @@ import { fadeIn, textVariant } from "../../../utils/motion";
 
 const Hero = () => {
     return (
-        <section className="relative w-full h-screen flex items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-t from-[#512260]/90 via-[#512260]/60 to-transparent z-10" />
+        <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#512260,_#7e4b91,_#bfa3d1)] -z-10" />
 
             <motion.div
                 variants={fadeIn("up", 0.3)}
@@ -29,16 +29,25 @@ const Hero = () => {
 
                 <motion.div
                     variants={fadeIn("up", 0.9)}
-                    className="mt-8"
+                    className="mt-8 flex justify-center"
                 >
-                    <button className="bg-[#bfa3d1] hover:bg-[#a58abf] text-[#512260] font-semibold px-6 py-3 rounded-full shadow-lg transition duration-300">
+                    <button className="bg-[#bfa3d1] hover:bg-[#a58abf] text-[#512260] font-semibold px-6 py-3 rounded-full shadow-lg backdrop-blur-md transition-all duration-300">
                         Explore Plans
                     </button>
                 </motion.div>
             </motion.div>
-            <div className="absolute bottom-0 w-full overflow-hidden leading-[0] rotate-180 z-20">
-                <svg className="relative block w-full h-20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none">
-                    <path fill="#7e4b91" d="M0,0 C480,100 960,0 1440,100 L1440,0 L0,0 Z"></path>
+
+            <div className="absolute bottom-[-1px] left-0 w-full overflow-hidden leading-[0] z-10">
+                <svg
+                    className="relative block w-full h-28 md:h-36"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 1440 320"
+                    preserveAspectRatio="none"
+                >
+                    <path
+                        fill="#f3eaf7"
+                        d="M0,224L60,192C120,160,240,96,360,106.7C480,117,600,203,720,208C840,213,960,139,1080,112C1200,85,1320,107,1380,117.3L1440,128L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+                    ></path>
                 </svg>
             </div>
         </section>

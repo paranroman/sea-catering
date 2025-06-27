@@ -35,11 +35,18 @@ const Navbar = ({ user }) => {
 
     return (
         <nav
-            className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-                showNav ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'
-            } ${scrolled ? 'bg-[#bfa3d1]' : 'bg-transparent'}`}
+            className={`fixed top-0 left-0 w-full z-50 transition-all duration-300
+            ${showNav ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'}
+            ${scrolled ? 'bg-[#bfa3d1]/80 backdrop-blur-md shadow-md' : 'bg-transparent'}
+            `}
+            style={{
+                WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
+                backdropFilter: scrolled ? 'blur(12px)' : 'none',
+                borderBottom: scrolled ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+            }}
         >
-            <div className="w-full flex justify-between items-center px-6 lg:px-12 py-4">
+
+        <div className="w-full flex justify-between items-center px-6 lg:px-12 py-4">
                 <Link to="/">
                     <img src={logo} alt="Logo" className="w-14 h-14" />
                 </Link>
@@ -51,7 +58,7 @@ const Navbar = ({ user }) => {
                             key={to}
                             to={to}
                             onClick={() => setMenuOpen(false)}
-                            className={`relative pb-1 text-[#512260] transition-all after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-white after:transition-all ${
+                            className={`relative pb-1 text-[#512260] transition-all after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#512260] after:transition-all ${
                                 isActive(to) ? 'after:w-full font-semibold' : ''
                             }`}
                         >
@@ -67,12 +74,14 @@ const Navbar = ({ user }) => {
                             <FaUserCircle />
                         </button>
                     ) : (
-                        <Link to="/register" className="bg-[#512260] text-white px-6 py-2 rounded-lg hover:bg-[#3b1748] transition-all">
+                        <Link
+                            to="/register"
+                            className="bg-[#512260] text-white px-6 py-2 rounded-lg hover:bg-[#3b1748] transition-all"
+                        >
                             Get Started
                         </Link>
                     )}
                 </div>
-
 
                 {/* Mobile Toggle */}
                 <div className="md:hidden z-50">
@@ -102,17 +111,26 @@ const Navbar = ({ user }) => {
                 ))}
 
                 {user ? (
-                    <button onClick={() => { setMenuOpen(false); navigate('/profile'); }} className="text-[#512260] font-semibold">
+                    <button
+                        onClick={() => {
+                            setMenuOpen(false);
+                            navigate('/profile');
+                        }}
+                        className="text-[#512260] font-semibold"
+                    >
                         {user.full_name}
                     </button>
                 ) : (
-                    <Link to="/register" className="bg-[#512260] text-white px-6 py-2 rounded-lg hover:bg-[#3b1748] transition-all">
+                    <Link
+                        to="/register"
+                        className="bg-[#512260] text-white px-6 py-2 rounded-lg hover:bg-[#3b1748] transition-all"
+                    >
                         Get Started
                     </Link>
                 )}
-
             </div>
         </nav>
+
     );
 };
 

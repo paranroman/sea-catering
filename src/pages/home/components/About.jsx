@@ -6,9 +6,9 @@ const About = () => {
     return (
         <section
             id="about"
-            className="relative w-full min-h-screen bg-gradient-to-b from-[#7e4b91] via-[#e9d7ef] to-[#f3eaf7] px-6 md:px-12 lg:px-24 pt-36 pb-24 flex flex-col items-center justify-center"
+            className="relative w-full min-h-screen bg-gradient-to-b from-[#f3eaf7] via-[#e9d7ef] to-[#e3d0ed] px-6 md:px-12 lg:px-24 pt-0 pb-24 flex flex-col items-center justify-center"
         >
-            {/* Title */}
+        {/* Title */}
             <motion.h2
                 variants={fadeIn('up', 0.1)}
                 initial="hidden"
