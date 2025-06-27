@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { HiMenu, HiX } from 'react-icons/hi';
-import { Link, useLocation } from 'react-router-dom';
+import { FaUserCircle } from 'react-icons/fa';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo-sea-catering-nonbg.png';
 
-const Navbar = () => {
+const Navbar = ({ user }) => {
     const location = useLocation();
     const [showNav, setShowNav] = useState(true);
     const [lastScroll, setLastScroll] = useState(0);
@@ -27,6 +28,8 @@ const Navbar = () => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, [lastScroll]);
+
+    const navigate = useNavigate();
 
     const isActive = (path) => location.pathname === path;
 
@@ -57,15 +60,19 @@ const Navbar = () => {
                     ))}
                 </div>
 
-                {/* Sign In Button (Desktop Only) */}
+                {/* Right Button (Desktop Only) */}
                 <div className={`hidden md:block transition-all duration-300 ${showNav ? 'opacity-100' : 'opacity-0'}`}>
-                    <Link
-                        to="/register"
-                        className="bg-[#4b0082] text-white px-6 py-2 rounded-lg hover:bg-purple-900 transition-all"
-                    >
-                        Sign In
-                    </Link>
+                    {user ? (
+                        <button onClick={() => navigate('/profile')} className="text-[#512260] text-3xl">
+                            <FaUserCircle />
+                        </button>
+                    ) : (
+                        <Link to="/register" className="bg-[#512260] text-white px-6 py-2 rounded-lg hover:bg-[#3b1748] transition-all">
+                            Get Started
+                        </Link>
+                    )}
                 </div>
+
 
                 {/* Mobile Toggle */}
                 <div className="md:hidden z-50">
@@ -93,13 +100,17 @@ const Navbar = () => {
                         {label}
                     </Link>
                 ))}
-                <Link
-                    to="/register"
-                    onClick={() => setMenuOpen(false)}
-                    className="bg-[#4b0082] px-6 py-2 rounded-lg hover:bg-purple-900 transition"
-                >
-                    Sign In
-                </Link>
+
+                {user ? (
+                    <button onClick={() => { setMenuOpen(false); navigate('/profile'); }} className="text-[#512260] font-semibold">
+                        {user.full_name}
+                    </button>
+                ) : (
+                    <Link to="/register" className="bg-[#512260] text-white px-6 py-2 rounded-lg hover:bg-[#3b1748] transition-all">
+                        Get Started
+                    </Link>
+                )}
+
             </div>
         </nav>
     );

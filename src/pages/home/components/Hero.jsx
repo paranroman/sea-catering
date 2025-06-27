@@ -1,59 +1,46 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { fadeIn, textVariant } from '../../../utils/motion';
-import truckImage from '../../../assets/truk-sea-catering.png';
+import { motion } from "framer-motion";
+import { fadeIn, textVariant } from "../../../utils/motion";
 
 const Hero = () => {
     return (
-        <section
-            id="home"
-            className="w-full min-h-screen flex flex-col md:flex-row justify-between items-center px-6 lg:px-32 pt-44 pb-16 bg-[#bfa3d1]"
-        >
-            {/* Left Text Column */}
-            <div className="w-full md:w-1/2 text-left">
-                <div className="space-y-2">
-                    <motion.h1
-                        variants={textVariant(0.2)}
-                        initial="hidden"
-                        whileInView="show"
-                        className="text-6xl sm:text-7xl lg:text-[6rem] font-bold text-[#512260] logo-font leading-tight tracking-wide"
-                    >
-                        SEA<br />Catering
-                    </motion.h1>
+        <section className="relative w-full h-screen flex items-center justify-center overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-t from-[#512260]/90 via-[#512260]/60 to-transparent z-10" />
 
-                    <motion.h2
-                        variants={fadeIn('up', 0.3)}
-                        initial="hidden"
-                        whileInView="show"
-                        className="text-3xl sm:text-4xl lg:text-5xl text-[#512260] cabin-font font-bold tracking-wide"
-                    >
-                        Healthy Meals, Anytime, Anywhere.
-                    </motion.h2>
-                </div>
-
-                <motion.p
-                    variants={fadeIn('up', 0.4)}
-                    initial="hidden"
-                    whileInView="show"
-                    className="mt-8 text-[#512260] text-xl sm:text-2xl lg:text-2xl dm-font max-w-xl leading-relaxed"
-                >
-                    SEA Catering is a deliciously customizable healthy meal service, delivering fresh and nutritious food straight to your doorstep across Indonesia. Let’s eat better together!
-                </motion.p>
-            </div>
-
-            {/* Right Truck Column */}
             <motion.div
-                variants={fadeIn('left', 0.5)}
+                variants={fadeIn("up", 0.3)}
                 initial="hidden"
                 whileInView="show"
-                className="w-full md:w-1/2 mt-20 md:mt-0 flex justify-center"
+                viewport={{ once: false, amount: 0.7 }}
+                className="relative z-20 text-center text-white max-w-3xl px-6"
             >
-                <img
-                    src={truckImage}
-                    alt="SEA Catering Truck"
-                    className="w-full max-w-[700px] md:max-w-[800px] lg:max-w-[880px] transition-transform duration-300 hover:scale-105"
-                />
+                <motion.h1
+                    variants={textVariant(0.4)}
+                    className="text-4xl md:text-6xl font-bold leading-tight mb-4 font-josefin"
+                >
+                    SEA Catering
+                </motion.h1>
+
+                <motion.p
+                    variants={fadeIn("up", 0.6)}
+                    className="text-lg md:text-xl font-dm"
+                >
+                    Healthy Meals, Anytime, Anywhere
+                </motion.p>
+
+                <motion.div
+                    variants={fadeIn("up", 0.9)}
+                    className="mt-8"
+                >
+                    <button className="bg-[#bfa3d1] hover:bg-[#a58abf] text-[#512260] font-semibold px-6 py-3 rounded-full shadow-lg transition duration-300">
+                        Explore Plans
+                    </button>
+                </motion.div>
             </motion.div>
+            <div className="absolute bottom-0 w-full overflow-hidden leading-[0] rotate-180 z-20">
+                <svg className="relative block w-full h-20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none">
+                    <path fill="#7e4b91" d="M0,0 C480,100 960,0 1440,100 L1440,0 L0,0 Z"></path>
+                </svg>
+            </div>
         </section>
     );
 };

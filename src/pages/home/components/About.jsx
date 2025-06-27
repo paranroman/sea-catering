@@ -6,62 +6,78 @@ const About = () => {
     return (
         <section
             id="about"
-            className="relative w-full min-h-screen bg-[#f3eaf7] flex flex-col items-center px-6 md:px-12 lg:px-24 pt-32 pb-24"
+            className="relative w-full min-h-screen bg-gradient-to-b from-[#7e4b91] via-[#e9d7ef] to-[#f3eaf7] px-6 md:px-12 lg:px-24 pt-36 pb-24 flex flex-col items-center justify-center"
         >
             {/* Title */}
             <motion.h2
                 variants={fadeIn('up', 0.1)}
                 initial="hidden"
                 whileInView="show"
-                className="absolute top-12 md:top-24 text-[3rem] md:text-[5rem] lg:text-[6rem] font-bold text-[#512260] text-center josefin-sans leading-tight"
+                viewport={{ once: false, amount: 0.5 }}
+                className="text-[2.8rem] md:text-[4.5rem] lg:text-[5.5rem] font-bold text-[#512260] text-center font-josefin mb-10"
             >
                 Our Services
             </motion.h2>
 
-            <div className="mt-64 w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 grid-rows-2 gap-y-24 md:gap-x-32 items-center justify-items-center">
-                {/* Meal Customization */}
+            {/* Introduction */}
+            <motion.p
+                variants={fadeIn('up', 0.15)}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: false, amount: 0.4 }}
+                className="text-[#5e4b5a] text-lg md:text-xl text-center max-w-3xl mb-16 font-cabin leading-relaxed"
+            >
+                SEA Catering is a customizable healthy meal service with delivery all across Indonesia.
+                Whether you’re at home or at work, we deliver fresh, nutritious meals made just for you.
+            </motion.p>
+
+            {/* Services Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-20 md:gap-x-24 w-full max-w-6xl">
+                {/* Service 1 */}
                 <motion.div
                     variants={fadeIn('up', 0.2)}
                     initial="hidden"
                     whileInView="show"
-                    className="text-center max-w-md"
+                    viewport={{ once: false, amount: 0.4 }}
+                    className="bg-white rounded-2xl shadow-lg p-8 text-center"
                 >
-                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#512260] dm-sans">
+                    <h3 className="text-2xl md:text-3xl font-bold text-[#512260] font-dm mb-4">
                         Meal Customization
                     </h3>
-                    <p className="text-[#9b9b9b] cabin-font mt-4 text-base sm:text-lg leading-relaxed">
-                        you can pick meal whatever you want, but still healthy.
+                    <p className="text-[#5e4b5a] text-base md:text-lg leading-relaxed font-cabin">
+                        You can pick any meal you like — tailored for your taste, yet always healthy.
                     </p>
                 </motion.div>
 
-                {/* Delivery to Major Cities */}
+                {/* Service 2 */}
                 <motion.div
                     variants={fadeIn('up', 0.3)}
                     initial="hidden"
                     whileInView="show"
-                    className="text-center max-w-md"
+                    viewport={{ once: false, amount: 0.4 }}
+                    className="bg-white rounded-2xl shadow-lg p-8 text-center"
                 >
-                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#512260] dm-sans">
+                    <h3 className="text-2xl md:text-3xl font-bold text-[#512260] font-dm mb-4">
                         Delivery to Major Cities
                     </h3>
-                    <p className="text-[#9b9b9b] cabin-font mt-4 text-base sm:text-lg leading-relaxed">
-                        we reach many cities in Indonesia, so don’t worry about it.
+                    <p className="text-[#5e4b5a] text-base md:text-lg leading-relaxed font-cabin">
+                        We deliver to most major cities across Indonesia — fast, fresh, and reliable.
                     </p>
                 </motion.div>
 
-                {/* Detailed Nutritional Info  */}
+                {/* Service 3 */}
                 <motion.div
                     variants={fadeIn('up', 0.4)}
                     initial="hidden"
                     whileInView="show"
-                    className="text-center max-w-xl md:col-span-2 md:row-start-2 justify-self-center"
+                    viewport={{ once: false, amount: 0.4 }}
+                    className="bg-white rounded-2xl shadow-lg p-8 text-center md:col-span-2"
                 >
-                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#512260] dm-sans">
+                    <h3 className="text-2xl md:text-3xl font-bold text-[#512260] font-dm mb-4">
                         Detailed Nutritional Information
                     </h3>
-                    <p className="text-[#9b9b9b] cabin-font mt-4 text-base sm:text-lg leading-relaxed">
-                        we provide you with nutritional <br className="hidden sm:inline" />
-                        information about the meal you pick.
+                    <p className="text-[#5e4b5a] text-base md:text-lg leading-relaxed font-cabin max-w-2xl mx-auto">
+                        We provide full nutritional info for every meal you choose — so you always know what’s on your plate.
                     </p>
                 </motion.div>
             </div>
