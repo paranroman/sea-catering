@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { fadeIn, textVariant } from "../../../utils/motion";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
     return (
@@ -31,9 +32,11 @@ const Hero = () => {
                     variants={fadeIn("up", 0.9)}
                     className="mt-8 flex justify-center"
                 >
-                    <button className="bg-[#bfa3d1] hover:bg-[#a58abf] text-[#512260] font-semibold px-6 py-3 rounded-full shadow-lg backdrop-blur-md transition-all duration-300">
-                        Explore Plans
-                    </button>
+                    <Link to="/subscription">
+                        <button className="bg-[#bfa3d1] hover:bg-[#a58abf] text-[#512260] font-semibold px-6 py-3 rounded-full shadow-lg backdrop-blur-md transition-all duration-300">
+                            Explore Plans
+                        </button>
+                    </Link>
                 </motion.div>
             </motion.div>
 

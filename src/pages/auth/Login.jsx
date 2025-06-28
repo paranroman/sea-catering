@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { HiEye, HiEyeOff } from "react-icons/hi";
-
 
 const Login = ({ setUser }) => {
     const [form, setForm] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
-    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
-
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -23,24 +21,26 @@ const Login = ({ setUser }) => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(form),
-                credentials: 'include'
             });
 
             const data = await res.json();
-            if (!res.ok) return setError(data.message || 'Login gagal');
+            if (!res.ok) return setError(data.error || 'Login gagal');
 
             const userData = { full_name: data.name, email: data.email };
             setUser(userData);
-            localStorage.setItem("user", JSON.stringify(userData));
-            navigate('/');
 
+            localStorage.setItem("token", JSON.stringify(data.token));
+            localStorage.setItem("user", JSON.stringify(userData));
+
+            navigate('/');
         } catch (e) {
-            setError('Server error' + e.message);
+            setError('Server error: ' + e.message);
         }
     };
 
+
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#bfa3d1] text-[#512260] font-[DM Sans]">
+        <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_center,_#f4e7fa,_#e8d4f0,_#bfa3d1)] text-[#512260] font-[DM Sans]">
             <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md space-y-4">
                 <h2 className="text-3xl font-bold text-center">Login</h2>
                 {error && <div className="text-red-500 text-sm">{error}</div>}
@@ -74,11 +74,17 @@ const Login = ({ setUser }) => {
                     </button>
                 </div>
 
-
-
                 <button type="submit" className="w-full bg-[#512260] text-white py-2 rounded-md hover:bg-[#3b1748]">
                     Login
                 </button>
+
+                {/* Link ke halaman Register */}
+                <p className="text-sm text-center mt-2">
+                    Don't have an account{' '}?{' '}
+                    <Link to="/register" className="text-[#512260] font-semibold underline hover:text-[#3b1748]">
+                        Sign Up
+                    </Link>
+                </p>
             </form>
         </div>
     );

@@ -10,7 +10,7 @@ const Profile = ({ user, handleLogout }) => {
     };
 
     return (
-        <div className="min-h-screen bg-[#bfa3d1] text-[#512260] flex items-center justify-center font-[DM Sans]">
+        <div className="min-h-screen bg-[radial-gradient(circle_at_center,_#f4e7fa,_#e8d4f0,_#bfa3d1)] text-[#512260] flex items-center justify-center font-[DM Sans]">
             <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-6 text-center">
                 <h2 className="text-3xl font-bold">Your Profile</h2>
 

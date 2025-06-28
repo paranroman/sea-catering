@@ -19,12 +19,15 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        setSuccess('Pendaftaran berhasil! Mengarahkan ke login...');
-        setTimeout(() => navigate('/login'), 1500);
-
+        setSuccess('');
 
         if (form.password !== form.confirmPassword) {
             return setError('Konfirmasi password tidak cocok.');
+        }
+
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+        if (!passwordRegex.test(form.password)) {
+            return setError('Password harus minimal 8 karakter dan mengandung huruf besar, huruf kecil, dan angka.');
         }
 
         try {
@@ -39,7 +42,10 @@ const Register = () => {
             });
 
             const data = await res.json();
-            if (!res.ok) return setError(data.error || 'Gagal mendaftar');
+
+            if (!res.ok) {
+                return setError(data.error || 'Gagal mendaftar');
+            }
 
             setSuccess('Pendaftaran berhasil! Mengarahkan ke login...');
             setForm({ fullName: '', email: '', password: '', confirmPassword: '' });
@@ -50,9 +56,8 @@ const Register = () => {
         }
     };
 
-
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#bfa3d1] text-[#512260] font-[DM Sans]">
+        <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_center,_#f4e7fa,_#e8d4f0,_#bfa3d1)] text-[#512260] font-[DM Sans]">
             <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-xl w-full max-w-md space-y-4">
                 <h2 className="text-3xl font-bold text-center">Register</h2>
 
