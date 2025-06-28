@@ -1,31 +1,23 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import calculatePrice from '../utils/pricing';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-const calculateDeliveryDays = (start, end) => {
-    if (!start || !end) return [];
-
-    const startIdx = daysOfWeek.indexOf(start);
-    const endIdx = daysOfWeek.indexOf(end);
-
-    if (startIdx === -1 || endIdx === -1) return [];
-
-    if (startIdx <= endIdx) return daysOfWeek.slice(startIdx, endIdx + 1);
-    return [...daysOfWeek.slice(startIdx), ...daysOfWeek.slice(0, endIdx + 1)];
-};
-
 const useSubscriptionForm = () => {
+
+    const storedUser = JSON.parse(localStorage.getItem('user')) || {};
+    const storedName = storedUser.full_name || '';
+
     const [form, setForm] = useState({
-        name: '',
+        name: storedName,
         phone: '',
         plan: '',
         meals: [],
         days: [],
         allergies: '',
-        rangeStart: '',
-        rangeEnd: '',
     });
+
 
     const [errors, setErrors] = useState({});
     const [totalPrice, setTotalPrice] = useState(0);
@@ -45,28 +37,12 @@ const useSubscriptionForm = () => {
         });
     };
 
-    const handleDeliveryRangeStart = (e) => {
-        const start = e.target.value;
-        setForm((prev) => {
-            const newDays = calculateDeliveryDays(start, prev.rangeEnd);
-            return { ...prev, rangeStart: start, days: newDays };
-        });
-    };
-
-    const handleDeliveryRangeEnd = (e) => {
-        const end = e.target.value;
-        setForm((prev) => {
-            const newDays = calculateDeliveryDays(prev.rangeStart, end);
-            return { ...prev, rangeEnd: end, days: newDays };
-        });
-    };
-
     useEffect(() => {
         const price = calculatePrice(form.plan, form.meals.length, form.days.length);
         setTotalPrice(price);
     }, [form.plan, form.meals, form.days]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const newErrors = {};
 
@@ -79,7 +55,22 @@ const useSubscriptionForm = () => {
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
-            alert(`Success!\n\nData:\n${JSON.stringify(form, null, 2)}\nTotal: Rp${totalPrice.toLocaleString('id-ID')}`);
+            try {
+                await axios.post('http://localhost:5000/api/subscription', {
+                    name: form.name,
+                    phone: form.phone,
+                    plan: form.plan,
+                    meals: form.meals,
+                    days: form.days,
+                    allergies: form.allergies,
+                    total_price: totalPrice,
+                });
+
+                alert('Subscription submitted successfully!');
+            } catch (error) {
+                console.error('Submission error:', error);
+                alert('Failed to submit. Please try again.');
+            }
         }
     };
 
@@ -88,8 +79,6 @@ const useSubscriptionForm = () => {
         errors,
         handleChange,
         handleCheckbox,
-        handleDeliveryRangeStart,
-        handleDeliveryRangeEnd,
         handleSubmit,
         totalPrice,
         daysOfWeek,

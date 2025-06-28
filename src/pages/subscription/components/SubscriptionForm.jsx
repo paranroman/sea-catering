@@ -1,12 +1,14 @@
 import React from 'react';
 import { FaLeaf, FaDrumstickBite, FaCrown, FaMoon } from 'react-icons/fa';
 import useSubscriptionForm from '../hooks/useSubscriptionForm';
-import { HiArrowNarrowRight } from 'react-icons/hi';
+import { Link } from "react-router-dom";
 import { MdWbSunny } from 'react-icons/md';
 import { WiDaySunny } from 'react-icons/wi';
 
 
 const SubscriptionForm = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
     const {
         form,
         errors,
@@ -14,8 +16,6 @@ const SubscriptionForm = () => {
         handleCheckbox,
         handleSubmit,
         totalPrice,
-        handleDeliveryRangeStart,
-        handleDeliveryRangeEnd,
     } = useSubscriptionForm();
 
     const mealOptions = [
@@ -25,11 +25,31 @@ const SubscriptionForm = () => {
     ];
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
+
+
     return (
         <form
             onSubmit={handleSubmit}
             className="bg-white p-8 rounded-xl shadow-lg space-y-8 text-[#512260] font-dm-sans mx-auto max-w-3xl"
-        >{/* Full Name & Phone */}
+        >
+            {!user && (
+                <div className="bg-[#f4e7fa] border-l-4 border-[#bfa3d1] text-[#512260] p-4 rounded-lg mb-4 text-center shadow-sm">
+                    <p className="font-semibold text-lg mb-2">You are not logged in!</p>
+                    <div className="space-y-2">
+                        <p className="text-base font-medium">
+                            To fill out the subscription form, you must log in first.
+                        </p>
+                        <Link
+                            to="/login"
+                            className="inline-block bg-[#512260] text-white px-6 py-2 rounded-lg font-semibold hover:bg-[#3b1748] transition duration-200"
+                        >
+                            Login Now
+                        </Link>
+                    </div>
+                </div>
+            )}
+
+            {/* Full Name & Phone */}
             <div className="grid md:grid-cols-2 gap-6">
                 <div>
                     <label className="block font-semibold text-lg mb-1">Full Name*</label>
@@ -37,10 +57,12 @@ const SubscriptionForm = () => {
                         type="text"
                         name="name"
                         value={form.name}
-                        onChange={handleChange}
-                        className="w-full border border-[#512260] rounded-lg p-3"
-                        required
+                        readOnly
+                        className="w-full border border-[#512260] rounded-lg p-3 bg-gray-100 cursor-not-allowed"
                     />
+                    <p className="text-sm text-gray-500 mt-1">Automatically filled</p>
+
+
                     {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
                 </div>
 
@@ -139,30 +161,35 @@ const SubscriptionForm = () => {
 
             {/* Delivery Days */}
             <div>
-                <label className="block font-semibold text-lg mb-3 text-center">Delivery Days (Range)*</label>
-                <div className="flex justify-center items-center gap-4">
-                    <div className="flex flex-col">
-                        <span className="text-sm mb-1">From</span>
-                        <select value={form.rangeStart} onChange={handleDeliveryRangeStart} className="p-2 border rounded-md border-[#512260]">
-                            <option value="">Select</option>
-                            {daysOfWeek.map(day => (
-                                <option key={day} value={day}>{day}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <HiArrowNarrowRight className="text-[#512260] text-2xl" />
-                    <div className="flex flex-col">
-                        <span className="text-sm mb-1">To</span>
-                        <select value={form.rangeEnd} onChange={handleDeliveryRangeEnd} className="p-2 border rounded-md border-[#512260]">
-                            <option value="">Select</option>
-                            {daysOfWeek.map(day => (
-                                <option key={day} value={day}>{day}</option>
-                            ))}
-                        </select>
-                    </div>
+                <label className="block font-semibold text-lg mb-3 text-center">Select Delivery Days*</label>
+                <div className="grid grid-cols-7 gap-2 justify-items-center">
+                    {daysOfWeek.map((day) => (
+                        <label key={day} className="cursor-pointer">
+                            <input
+                                type="checkbox"
+                                name="days"
+                                value={day}
+                                checked={form.days.includes(day)}
+                                onChange={handleCheckbox}
+                                className="hidden"
+                            />
+                            <div
+                                className={`w-14 h-10 flex items-center justify-center text-sm border-2 rounded-full font-medium text-center transition duration-300
+                                ${form.days.includes(day) ? 'border-[#512260] bg-[#512260] text-white' : 'border-gray-300 text-[#512260]'} hover:scale-105 hover:shadow-sm`}
+                            >
+                                    {day.slice(0, 3)}
+
+                            </div>
+                        </label>
+                    ))}
                 </div>
-                {errors.days && <p className="text-red-500 text-sm text-center mt-2">{errors.days}</p>}
+                {errors.days && (
+                    <p className="text-red-500 text-sm text-center mt-2">{errors.days}</p>
+                )}
             </div>
+
+
+
 
 
             {/* Allergies */}
@@ -187,6 +214,7 @@ const SubscriptionForm = () => {
             <div className="text-center">
                 <button
                     type="submit"
+                    disabled={!user}
                     className="bg-[#512260] text-white py-3 px-8 rounded-lg hover:bg-[#3e1b4a] transition"
                 >
                     Submit

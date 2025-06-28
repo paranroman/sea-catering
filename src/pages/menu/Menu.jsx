@@ -33,7 +33,7 @@ const Menu = () => {
 
 
             <motion.h2
-                className="text-4xl md:text-5xl font-bold text-center text-[#512260] mb-16"
+                className="text-4xl md:text-5xl font-bold font-cabin text-center text-[#512260] mb-16"
                 variants={textVariant(0.1)}
             >
                 Our Meal Plans

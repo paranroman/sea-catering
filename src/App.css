@@ -1,20 +1,52 @@
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=DM+Sans:wght@400;500&family=Josefin+Sans:wght@400;700&display=swap');
+@font-face {
+    font-family: 'DM Sans';
+    src: url('/src/assets/fonts/DMSans-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DM Sans';
+    src: url('/src/assets/fonts/DMSans-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cabin';
+    src: url('/src/assets/fonts/Cabin-Regular.ttf') format('truetype');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Cabin';
+    src: url('/src/assets/fonts/Cabin-Bold.ttf') format('truetype');
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Josefin Sans';
+    src: url('/src/assets/fonts/JosefinSans-Regular.ttf') format('truetype');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Josefin Sans';
+    src: url('/src/assets/fonts/JosefinSans-Bold.ttf') format('truetype');
+    font-weight: 700;
+}
 
 body {
     font-family: 'DM Sans', sans-serif;
 }
 
-.logo-font {
+.font-josefin {
     font-family: 'Josefin Sans', sans-serif;
 }
 
-.dm-font {
-    font-family: 'DM Sans', sans-serif;
-}
-
-.cabin-font {
+.font-cabin {
     font-family: 'Cabin', sans-serif;
 }
 

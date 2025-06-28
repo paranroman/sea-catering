@@ -11,12 +11,12 @@ export const register = async (req, res) => {
         return res.status(400).json({ error: "Semua field wajib diisi." });
     }
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=<>?{}[\]~])[A-Za-z\d!@#$%^&*()_\-+=<>?{}[\]~]{8,}$/;
 
     if (!passwordRegex.test(password)) {
         return res.status(400).json({
             error:
-                "Password minimal 8 karakter dan harus ada huruf besar, kecil, dan angka. Silahkan coba lagi.",
+                "Password minimal 8 karakter dan harus ada huruf besar, kecil, angka dan karakter spesial. Silahkan coba lagi.",
         });
     }
 

@@ -6,7 +6,7 @@ import { fadeIn, textVariant, staggerContainer } from '../../utils/motion';
 const Contact = () => {
     return (
         <motion.section
-            className="min-h-screen relative px-6 py-32 lg:px-32 text-[#512260] font-dm-sans flex items-center overflow-hidden"
+            className="min-h-screen relative px-6 py-32 lg:px-32 text-[#512260] flex items-center overflow-hidden"
             variants={staggerContainer(0.2, 0.1)}
             initial="hidden"
             animate="show"
@@ -16,7 +16,7 @@ const Contact = () => {
             <div className="w-full">
                 <motion.h2
                     variants={textVariant(0.2)}
-                    className="text-6xl font-bold text-center mb-20"
+                    className="text-6xl font-cabin font-bold text-center mb-20"
                 >
                     Contact
                 </motion.h2>
@@ -31,7 +31,7 @@ const Contact = () => {
                         <FaPhoneAlt className="text-4xl text-[#512260] mb-4 drop-shadow-sm" />
                         <h3 className="text-2xl font-semibold mb-3">Talk to Our Team</h3>
                         <p className="text-sm text-gray-700 mb-6 px-4">
-                            We’ll help you find the right meal plan and assist with anything you need.
+                            We’ll help you find the right meal plan and assist anything you need.
                         </p>
                         <a
                             href="tel:+6281234567890"

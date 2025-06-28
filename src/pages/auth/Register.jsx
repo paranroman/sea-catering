@@ -25,9 +25,9 @@ const Register = () => {
             return setError('Konfirmasi password tidak cocok.');
         }
 
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=<>?{}[\]~])[A-Za-z\d!@#$%^&*()_\-+=<>?{}[\]~]{8,}$/;
         if (!passwordRegex.test(form.password)) {
-            return setError('Password harus minimal 8 karakter dan mengandung huruf besar, huruf kecil, dan angka.');
+            return setError('Password harus minimal 8 karakter dan mengandung huruf besar, huruf kecil, angka dan karakter spesial.');
         }
 
         try {
