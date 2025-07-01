@@ -1,14 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaLeaf, FaDrumstickBite, FaCrown, FaMoon } from 'react-icons/fa';
 import useSubscriptionForm from '../hooks/useSubscriptionForm';
 import { Link } from "react-router-dom";
 import { MdWbSunny } from 'react-icons/md';
 import { WiDaySunny } from 'react-icons/wi';
-
+import axios from 'axios';
 
 const SubscriptionForm = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-
     const {
         form,
         errors,
@@ -16,7 +14,25 @@ const SubscriptionForm = () => {
         handleCheckbox,
         handleSubmit,
         totalPrice,
+        alreadySubscribed,
     } = useSubscriptionForm();
+
+    const [userName, setUserName] = useState('');
+    const isLoggedIn = !!localStorage.getItem("token");
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const res = await axios.get("http://localhost:5000/api/auth/profile", {
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+                });
+                setUserName(res.data.fullName);
+            } catch (err) {
+                console.error("Failed to fetch profile:", err);
+            }
+        };
+        if (isLoggedIn) fetchProfile();
+    }, [isLoggedIn]);
 
     const mealOptions = [
         { name: 'Breakfast', icon: <MdWbSunny className="text-3xl mb-1 text-[#512260]" /> },
@@ -25,14 +41,12 @@ const SubscriptionForm = () => {
     ];
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-
-
     return (
         <form
             onSubmit={handleSubmit}
             className="bg-white p-8 rounded-xl shadow-lg space-y-8 text-[#512260] font-dm-sans mx-auto max-w-3xl"
         >
-            {!user && (
+            {!isLoggedIn && (
                 <div className="bg-[#f4e7fa] border-l-4 border-[#bfa3d1] text-[#512260] p-4 rounded-lg mb-4 text-center shadow-sm">
                     <p className="font-semibold text-lg mb-2">You are not logged in!</p>
                     <div className="space-y-2">
@@ -49,21 +63,23 @@ const SubscriptionForm = () => {
                 </div>
             )}
 
+            {alreadySubscribed && (
+                <div className="text-center font-medium text-red-500 border border-red-200 p-3 rounded-md bg-red-50">
+                    You have already subscribed. You cannot submit again.
+                </div>
+            )}
+
             {/* Full Name & Phone */}
             <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                    <label className="block font-semibold text-lg mb-1">Full Name*</label>
+                    <label className="block font-semibold text-lg mb-1">Full Name</label>
                     <input
                         type="text"
-                        name="name"
-                        value={form.name}
+                        value={userName}
                         readOnly
                         className="w-full border border-[#512260] rounded-lg p-3 bg-gray-100 cursor-not-allowed"
                     />
-                    <p className="text-sm text-gray-500 mt-1">Automatically filled</p>
-
-
-                    {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+                    <p className="text-sm text-gray-500 mt-1">Automatically from your profile</p>
                 </div>
 
                 <div>
@@ -84,53 +100,29 @@ const SubscriptionForm = () => {
             <div>
                 <label className="block font-semibold text-lg mb-3">Plan*</label>
                 <div className="flex justify-around text-center gap-3">
-                    <label className="cursor-pointer">
-                        <input
-                            type="radio"
-                            name="plan"
-                            value="Diet"
-                            onChange={handleChange}
-                            className="hidden"
-                            checked={form.plan === 'Diet'}
-                        />
-                        <div className={`w-32 p-4 rounded-xl border-2 ${form.plan === 'Diet' ? 'border-[#512260]' : 'border-gray-300'} transition duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-md`}>
-                            <FaLeaf className="mx-auto text-3xl mb-2 text-[#512260]" />
-                            <span className="font-semibold">Diet Plan</span>
-                            <p className="text-sm">Rp30.000</p>
-                        </div>
-                    </label>
-
-                    <label className="cursor-pointer">
-                        <input
-                            type="radio"
-                            name="plan"
-                            value="Protein"
-                            onChange={handleChange}
-                            className="hidden"
-                            checked={form.plan === 'Protein'}
-                        />
-                        <div className={`w-32 p-4 rounded-xl border-2 ${form.plan === 'Protein' ? 'border-[#512260]' : 'border-gray-300'} transition duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-md`}>
-                            <FaDrumstickBite className="mx-auto text-3xl mb-2 text-[#512260]" />
-                            <span className="font-semibold">Protein Plan</span>
-                            <p className="text-sm">Rp40.000</p>
-                        </div>
-                    </label>
-
-                    <label className="cursor-pointer">
-                        <input
-                            type="radio"
-                            name="plan"
-                            value="Royal"
-                            onChange={handleChange}
-                            className="hidden"
-                            checked={form.plan === 'Royal'}
-                        />
-                        <div className={`w-32 p-4 rounded-xl border-2 ${form.plan === 'Royal' ? 'border-[#512260]' : 'border-gray-300'} transition duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-md`}>
-                            <FaCrown className="mx-auto text-3xl mb-2 text-[#512260]" />
-                            <span className="font-semibold">Royal Plan</span>
-                            <p className="text-sm">Rp60.000</p>
-                        </div>
-                    </label>
+                    {["Diet", "Protein", "Royal"].map((plan, idx) => {
+                        const icons = [<FaLeaf />, <FaDrumstickBite />, <FaCrown />];
+                        const prices = [30000, 40000, 60000];
+                        return (
+                            <label key={plan} className="cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="plan"
+                                    value={plan}
+                                    onChange={handleChange}
+                                    className="hidden"
+                                    checked={form.plan === plan}
+                                />
+                                <div className={`w-32 h-32 flex flex-col items-center justify-center p-4 rounded-xl border-2
+                                    ${form.plan === plan ? 'border-[#512260]' : 'border-gray-300'}
+                                    transition duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-md`}>
+                                    <div className="text-3xl mb-2 text-[#512260]">{icons[idx]}</div>
+                                    <span className="font-semibold">{plan} Plan</span>
+                                    <p className="text-sm">Rp{prices[idx].toLocaleString('id-ID')}</p>
+                                </div>
+                            </label>
+                        );
+                    })}
                 </div>
 
             </div>
@@ -177,8 +169,7 @@ const SubscriptionForm = () => {
                                 className={`w-14 h-10 flex items-center justify-center text-sm border-2 rounded-full font-medium text-center transition duration-300
                                 ${form.days.includes(day) ? 'border-[#512260] bg-[#512260] text-white' : 'border-gray-300 text-[#512260]'} hover:scale-105 hover:shadow-sm`}
                             >
-                                    {day.slice(0, 3)}
-
+                                {day.slice(0, 3)}
                             </div>
                         </label>
                     ))}
@@ -187,10 +178,6 @@ const SubscriptionForm = () => {
                     <p className="text-red-500 text-sm text-center mt-2">{errors.days}</p>
                 )}
             </div>
-
-
-
-
 
             {/* Allergies */}
             <div>
@@ -214,8 +201,12 @@ const SubscriptionForm = () => {
             <div className="text-center">
                 <button
                     type="submit"
-                    disabled={!user}
-                    className="bg-[#512260] text-white py-3 px-8 rounded-lg hover:bg-[#3e1b4a] transition"
+                    disabled={!isLoggedIn || alreadySubscribed}
+                    className={`py-3 px-8 rounded-lg transition ${
+                        alreadySubscribed || !isLoggedIn
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-[#512260] hover:bg-[#3e1b4a] text-white'
+                    }`}
                 >
                     Submit
                 </button>

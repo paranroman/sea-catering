@@ -1,6 +1,6 @@
-import dietImg from '../../../assets/image/diet.jpg';
-import proteinImg from '../../../assets/image/protein.jpg';
-import royalImg from '../../../assets/image/royal.jpg';
+import dietImg from '../../../assets/images/diet.jpg';
+import proteinImg from '../../../assets/images/protein.jpg';
+import royalImg from '../../../assets/images/royal.jpg';
 
 const mealPlans = [
     {

@@ -1,28 +1,53 @@
 import db from "../config/db.js";
 
 export const getTestimonials = (req, res) => {
-    db.query("SELECT * FROM testimonial ORDER BY created_at DESC", (err, result) => {
+    const query = `
+        SELECT t.id, u.fullName AS name, t.message, t.rating, t.created_at
+        FROM testimonial t
+        JOIN users u ON t.user_id = u.id
+        ORDER BY t.created_at DESC
+    `;
+
+    db.query(query, (err, result) => {
         if (err) return res.status(500).json({ error: err });
         res.json(result);
     });
 };
 
+
 export const createTestimonial = async (req, res) => {
     const { message, rating } = req.body;
-    const [rows] = await db.promise().query("SELECT fullName FROM users WHERE email = ?", [req.user.email]);
-    const name = rows[0]?.fullName || req.user.email.split('@')[0];
-
 
     if (!message || !rating) {
         return res.status(400).json({ error: "Message dan rating wajib diisi" });
     }
 
-    db.query(
-        "INSERT INTO testimonial (name, message, rating) VALUES (?, ?, ?)",
-        [name, message, rating],
-        (err, result) => {
-            if (err) return res.status(500).json({ error: err });
-            res.json({ id: result.insertId, name, message, rating });
+    try {
+        const [userRows] = await db
+            .promise()
+            .query("SELECT id, fullName FROM users WHERE email = ?", [req.user.email]);
+
+        const userId = userRows[0]?.id;
+        const fullName = userRows[0]?.fullName;
+
+        if (!userId) {
+            return res.status(404).json({ error: "User tidak ditemukan." });
         }
-    );
+
+        await db
+            .promise()
+            .query(
+                "INSERT INTO testimonial (user_id, message, rating) VALUES (?, ?, ?)",
+                [userId, message, rating]
+            );
+
+        res.status(201).json({
+            name: fullName,
+            message,
+            rating: parseFloat(rating)
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error saat menyimpan testimonial" });
+    }
 };

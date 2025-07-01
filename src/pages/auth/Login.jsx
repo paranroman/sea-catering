@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { HiEye, HiEyeOff } from "react-icons/hi";
+import axios from 'axios';
 
 const Login = ({ setUser }) => {
     const [form, setForm] = useState({ email: '', password: '' });
@@ -17,27 +18,18 @@ const Login = ({ setUser }) => {
         setError('');
 
         try {
-            const res = await fetch('http://localhost:5000/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
-            });
+            const res = await axios.post('http://localhost:5000/api/auth/login', form);
 
-            const data = await res.json();
-            if (!res.ok) return setError(data.error || 'Login gagal');
-
-            const userData = { full_name: data.name, email: data.email };
-            setUser(userData);
-
-            localStorage.setItem("token", JSON.stringify(data.token));
-            localStorage.setItem("user", JSON.stringify(userData));
+            const { token, user } = res.data;
+            localStorage.setItem("token", token);
+            localStorage.setItem("user", JSON.stringify(user));
+            setUser(user);
 
             navigate('/');
         } catch (e) {
-            setError('Server error: ' + e.message);
+            setError(e.response?.data?.error || 'Login gagal. Server error.');
         }
     };
-
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_center,_#f4e7fa,_#e8d4f0,_#bfa3d1)] text-[#512260] font-[DM Sans]">

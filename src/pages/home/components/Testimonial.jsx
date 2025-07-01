@@ -8,22 +8,45 @@ const initialState = {
     testimonials: [],
     currentIndex: 0,
     direction: 1,
-    form: { name: '', message: '', rating: 0 },
+    form: { message: '', rating: 0 },
     selectedRating: 0,
     hoverRating: 0,
     messageLength: 0,
-    nameLength: 0,
 };
+
+const dummyTestimonials = [
+    {
+        name: "Ade Rai",
+        message: "SEA Catering is amazing! I don't need to blend 10 boile eggs anymore for my breakfast!",
+        rating: 4.5,
+    },
+    {
+        name: "Deddy Corbuzier",
+        message: "This makes my own diet progeam (OCD) very far below than this",
+        rating: 5,
+    },
+    {
+        name: "Ashton Hall",
+        message: "The meals is very suitable for my morning routine!",
+        rating: 4,
+    },
+];
 
 function reducer(state, action) {
     switch (action.type) {
+        case 'ADD_TESTIMONIAL':
+            return {
+                ...state,
+                testimonials: [...state.testimonials, action.payload],
+                currentIndex: state.testimonials.length, // langsung ke testimonial terbaru
+            };
         case 'SET_TESTIMONIALS':
             return { ...state, testimonials: action.payload };
         case 'SET_FORM_FIELD':
             return {
                 ...state,
                 form: { ...state.form, [action.field]: action.value },
-                [`${action.field}Length`]: action.value.length,
+                messageLength: action.value.length,
             };
         case 'SET_RATING':
             return {
@@ -33,15 +56,12 @@ function reducer(state, action) {
             };
         case 'SET_HOVER_RATING':
             return { ...state, hoverRating: action.value };
-        case 'ADD_TESTIMONIAL':
+        case 'RESET_FORM':
             return {
                 ...state,
-                testimonials: [...state.testimonials, action.payload],
-                currentIndex: state.testimonials.length,
-                form: { name: '', message: '', rating: 0 },
+                form: { message: '', rating: 0 },
                 selectedRating: 0,
                 hoverRating: 0,
-                nameLength: 0,
                 messageLength: 0,
             };
         case 'NEXT':
@@ -65,28 +85,43 @@ function reducer(state, action) {
 const Testimonial = () => {
     const [state, dispatch] = useReducer(reducer, initialState);
 
+    const fetchTestimonials = async () => {
+        try {
+            const res = await fetch('http://localhost:5000/api/testimonials');
+            const data = await res.json();
+
+            const combined = [...dummyTestimonials, ...data];
+            dispatch({ type: 'SET_TESTIMONIALS', payload: combined });
+        } catch (err) {
+            console.error('Failed to fetch testimonials:', err);
+        }
+    };
+
+
     useEffect(() => {
-        const fetchTestimonials = async () => {
-            try {
-                const res = await fetch('http://localhost:5000/api/testimonials');
-                const data = await res.json();
-                dispatch({ type: 'SET_TESTIMONIALS', payload: data });
-            } catch (err) {
-                console.error('Failed to fetch testimonials:', err);
-            }
-        };
-        fetchTestimonials();
+        const token = localStorage.getItem("token");
+
+        dispatch({ type: 'SET_TESTIMONIALS', payload: dummyTestimonials });
+
+        if (token) {
+            fetchTestimonials();
+        }
     }, []);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = JSON.parse(localStorage.getItem("token"));
-
+            const token = localStorage.getItem("token");
             if (!token) {
                 alert("Kamu harus login dulu sebelum memberi testimonial!");
                 return;
             }
+
+            const payload = {
+                message: state.form.message,
+                rating: state.form.rating,
+            };
 
             const res = await fetch("http://localhost:5000/api/testimonials", {
                 method: "POST",
@@ -94,18 +129,21 @@ const Testimonial = () => {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify(state.form),
+                body: JSON.stringify(payload),
             });
 
             if (!res.ok) throw new Error("Gagal submit testimonial");
 
             const newTestimonial = await res.json();
             dispatch({ type: "ADD_TESTIMONIAL", payload: newTestimonial });
+            dispatch({ type: "RESET_FORM" });
+
         } catch (err) {
             console.error(err);
             alert("Gagal mengirim testimonial");
         }
     };
+
 
     const renderStars = (rating) => {
         const stars = [];
@@ -133,40 +171,6 @@ const Testimonial = () => {
 
     const currentTestimonial = state.testimonials[state.currentIndex];
 
-    const variants = {
-        enter: (dir) => ({
-            x: dir > 0 ? 150 : -150,
-            opacity: 0,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-        }),
-        center: {
-            x: 0,
-            opacity: 1,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-        },
-        exit: (dir) => ({
-            x: dir > 0 ? -150 : 150,
-            opacity: 0,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-        }),
-    };
-
-    const isLoggedIn = !!localStorage.getItem("token");
-
-    useEffect(() => {
-        if (isLoggedIn) {
-            dispatch({ type: 'SET_FORM_FIELD', field: 'name', value: '' });
-        }
-    }, [isLoggedIn]);
 
     return (
         <section
@@ -196,7 +200,6 @@ const Testimonial = () => {
                             <motion.div
                                 key={state.currentIndex}
                                 custom={state.direction}
-                                variants={variants}
                                 initial="enter"
                                 animate="center"
                                 exit="exit"
@@ -230,25 +233,6 @@ const Testimonial = () => {
                     className="w-full md:w-1/2 bg-white p-8 rounded-2xl shadow-lg space-y-6"
                 >
                     <h3 className="text-2xl md:text-3xl font-bold font-dm mb-4">Leave a Review</h3>
-
-                    {/* Name */}
-                    {!isLoggedIn && (
-                        <div>
-                            <label className="block mb-1 font-medium">Name</label>
-                            <input
-                                type="text"
-                                name="name"
-                                maxLength={25}
-                                value={state.form.name}
-                                onChange={(e) =>
-                                    dispatch({ type: 'SET_FORM_FIELD', field: 'name', value: e.target.value })
-                                }
-                                className="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#bfa3d1]"
-                                required
-                            />
-                            <div className="text-sm text-right text-gray-500">{state.nameLength} / 25</div>
-                        </div>
-                    )}
 
                     {/* Message */}
                     <div>
