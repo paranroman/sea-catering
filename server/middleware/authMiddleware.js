@@ -18,7 +18,7 @@ export const verifyToken = (req, res, next) => {
         console.log("Token valid:", decoded);
         next();
     } catch (err) {
-        console.log("Token invalid");
+        console.log(err);
         return res.status(401).json({ error: "Token tidak valid." });
     }
 };

@@ -9,6 +9,7 @@ import Contact from './pages/contact/Contact';
 import Register from './pages/auth/Register';
 import Login from './pages/auth/Login';
 import Profile from './pages/profile/Profile';
+import UserDashboard from './pages/subscription/components/UserDashboard';
 import './App.css';
 
 export const App = () => {
@@ -33,6 +34,7 @@ export const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/menu" element={<Menu />} />
                 <Route path="/subscription" element={<Subscription />} />
+                <Route path="/dashboard" element={<UserDashboard />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login setUser={setUser} />} />

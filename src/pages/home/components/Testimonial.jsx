@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaStar, FaRegStar, FaStarHalfAlt } from 'react-icons/fa';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
@@ -38,7 +38,7 @@ function reducer(state, action) {
             return {
                 ...state,
                 testimonials: [...state.testimonials, action.payload],
-                currentIndex: state.testimonials.length, // langsung ke testimonial terbaru
+                currentIndex: state.testimonials.length,
             };
         case 'SET_TESTIMONIALS':
             return { ...state, testimonials: action.payload };
@@ -74,8 +74,7 @@ function reducer(state, action) {
             return {
                 ...state,
                 direction: -1,
-                currentIndex:
-                    (state.currentIndex - 1 + state.testimonials.length) % state.testimonials.length,
+                currentIndex: (state.currentIndex - 1 + state.testimonials.length) % state.testimonials.length,
             };
         default:
             return state;
@@ -84,12 +83,12 @@ function reducer(state, action) {
 
 const Testimonial = () => {
     const [state, dispatch] = useReducer(reducer, initialState);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const fetchTestimonials = async () => {
         try {
             const res = await fetch('http://localhost:5000/api/testimonials');
             const data = await res.json();
-
             const combined = [...dummyTestimonials, ...data];
             dispatch({ type: 'SET_TESTIMONIALS', payload: combined });
         } catch (err) {
@@ -97,17 +96,22 @@ const Testimonial = () => {
         }
     };
 
-
     useEffect(() => {
         const token = localStorage.getItem("token");
-
         dispatch({ type: 'SET_TESTIMONIALS', payload: dummyTestimonials });
 
         if (token) {
             fetchTestimonials();
+            fetch("http://localhost:5000/api/auth/profile", {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.role === 'admin') setIsAdmin(true);
+                })
+                .catch(err => console.error(err));
         }
     }, []);
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -144,7 +148,6 @@ const Testimonial = () => {
         }
     };
 
-
     const renderStars = (rating) => {
         const stars = [];
         let remaining = rating;
@@ -170,7 +173,6 @@ const Testimonial = () => {
     };
 
     const currentTestimonial = state.testimonials[state.currentIndex];
-
 
     return (
         <section
@@ -225,79 +227,79 @@ const Testimonial = () => {
                 </motion.div>
 
                 {/* Form */}
-                <motion.form
-                    onSubmit={handleSubmit}
-                    variants={fadeIn('right', 0.3)}
-                    initial="hidden"
-                    whileInView="show"
-                    className="w-full md:w-1/2 bg-white p-8 rounded-2xl shadow-lg space-y-6"
-                >
-                    <h3 className="text-2xl md:text-3xl font-bold font-dm mb-4">Leave a Review</h3>
-
-                    {/* Message */}
-                    <div>
-                        <label className="block mb-1 font-medium">Message</label>
-                        <textarea
-                            name="message"
-                            maxLength={250}
-                            value={state.form.message}
-                            onChange={(e) =>
-                                dispatch({ type: 'SET_FORM_FIELD', field: 'message', value: e.target.value })
-                            }
-                            rows={4}
-                            className="w-full p-3 rounded-md border border-gray-300 resize-none focus:outline-none focus:ring-2 focus:ring-[#bfa3d1]"
-                            required
-                        />
-                        <div className="text-sm text-right text-gray-500">{state.messageLength} / 250</div>
-                    </div>
-
-                    {/* Rating */}
-                    <div>
-                        <label className="block mb-1 font-medium">Rating</label>
-                        <div className="flex flex-col items-center">
-                            <div className="flex gap-2 mb-1">
-                                {[1, 2, 3, 4, 5].map((star) => {
-                                    const current = state.hoverRating || state.selectedRating || state.form.rating;
-                                    const isFull = current >= star;
-                                    const isHalf = current >= star - 0.5 && current < star;
-
-                                    return (
-                                        <div
-                                            key={star}
-                                            className="relative w-10 h-10 cursor-pointer"
-                                            onMouseMove={(e) => {
-                                                const box = e.currentTarget.getBoundingClientRect();
-                                                const mouseX = e.clientX - box.left;
-                                                const value = mouseX < box.width / 2 ? star - 0.5 : star;
-                                                dispatch({ type: 'SET_HOVER_RATING', value });
-                                            }}
-                                            onMouseLeave={() => dispatch({ type: 'SET_HOVER_RATING', value: 0 })}
-                                            onClick={(e) => handleStarClick(e, star)}
-                                        >
-                                            <FaStar size={40} className="text-gray-300" />
-                                            {(isFull || isHalf) && (
-                                                <div
-                                                    className="absolute top-0 left-0 h-full overflow-hidden"
-                                                    style={{ width: isFull ? '100%' : '50%' }}
-                                                >
-                                                    <FaStar size={40} className="text-yellow-400" />
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                            <span className="text-lg font-semibold">{state.selectedRating || state.form.rating} / 5</span>
-                        </div>
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="w-full bg-[#512260] hover:bg-[#3a1b48] text-white py-3 rounded-lg font-semibold transition"
+                {!isAdmin && (
+                    <motion.form
+                        onSubmit={handleSubmit}
+                        variants={fadeIn('right', 0.3)}
+                        initial="hidden"
+                        whileInView="show"
+                        className="w-full md:w-1/2 bg-white p-8 rounded-2xl shadow-lg space-y-6"
                     >
-                        Submit Review
-                    </button>
-                </motion.form>
+                        <h3 className="text-2xl md:text-3xl font-bold font-dm mb-4">Leave a Review</h3>
+
+                        <div>
+                            <label className="block mb-1 font-medium">Message</label>
+                            <textarea
+                                name="message"
+                                maxLength={250}
+                                value={state.form.message}
+                                onChange={(e) =>
+                                    dispatch({ type: 'SET_FORM_FIELD', field: 'message', value: e.target.value })
+                                }
+                                rows={4}
+                                className="w-full p-3 rounded-md border border-gray-300 resize-none focus:outline-none focus:ring-2 focus:ring-[#bfa3d1]"
+                                required
+                            />
+                            <div className="text-sm text-right text-gray-500">{state.messageLength} / 250</div>
+                        </div>
+
+                        <div>
+                            <label className="block mb-1 font-medium">Rating</label>
+                            <div className="flex flex-col items-center">
+                                <div className="flex gap-2 mb-1">
+                                    {[1, 2, 3, 4, 5].map((star) => {
+                                        const current = state.hoverRating || state.selectedRating || state.form.rating;
+                                        const isFull = current >= star;
+                                        const isHalf = current >= star - 0.5 && current < star;
+
+                                        return (
+                                            <div
+                                                key={star}
+                                                className="relative w-10 h-10 cursor-pointer"
+                                                onMouseMove={(e) => {
+                                                    const box = e.currentTarget.getBoundingClientRect();
+                                                    const mouseX = e.clientX - box.left;
+                                                    const value = mouseX < box.width / 2 ? star - 0.5 : star;
+                                                    dispatch({ type: 'SET_HOVER_RATING', value });
+                                                }}
+                                                onMouseLeave={() => dispatch({ type: 'SET_HOVER_RATING', value: 0 })}
+                                                onClick={(e) => handleStarClick(e, star)}
+                                            >
+                                                <FaStar size={40} className="text-gray-300" />
+                                                {(isFull || isHalf) && (
+                                                    <div
+                                                        className="absolute top-0 left-0 h-full overflow-hidden"
+                                                        style={{ width: isFull ? '100%' : '50%' }}
+                                                    >
+                                                        <FaStar size={40} className="text-yellow-400" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                <span className="text-lg font-semibold">{state.selectedRating || state.form.rating} / 5</span>
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="w-full bg-[#512260] hover:bg-[#3a1b48] text-white py-3 rounded-lg font-semibold transition"
+                        >
+                            Submit Review
+                        </button>
+                    </motion.form>
+                )}
             </div>
         </section>
     );

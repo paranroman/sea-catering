@@ -89,15 +89,18 @@ export const getProfile = async (req, res) => {
 
     try {
         const [[user]] = await db.promise().query(
-            "SELECT fullName, email FROM users WHERE id = ?", [userId]
+            "SELECT fullName, email, role FROM users WHERE id = ?", [userId]
         );
+
 
         const [[sub]] = await db.promise().query(
             "SELECT phone FROM subscription WHERE user_id = ? ORDER BY id DESC LIMIT 1", [userId]
         );
 
-        res.json({ fullName: user.fullName, email: user.email, phone: sub?.phone || '' });
+        res.json({ fullName: user.fullName, email: user.email, phone: sub?.phone || '', role: user.role });
+
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: "Server error fetching profile" });
     }
 };

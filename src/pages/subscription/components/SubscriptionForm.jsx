@@ -6,7 +6,7 @@ import { MdWbSunny } from 'react-icons/md';
 import { WiDaySunny } from 'react-icons/wi';
 import axios from 'axios';
 
-const SubscriptionForm = () => {
+const SubscriptionForm = ({onSuccess}) => {
     const {
         form,
         errors,
@@ -15,7 +15,7 @@ const SubscriptionForm = () => {
         handleSubmit,
         totalPrice,
         alreadySubscribed,
-    } = useSubscriptionForm();
+    } = useSubscriptionForm(onSuccess);
 
     const [userName, setUserName] = useState('');
     const isLoggedIn = !!localStorage.getItem("token");
@@ -85,10 +85,15 @@ const SubscriptionForm = () => {
                 <div>
                     <label className="block font-semibold text-lg mb-1">Phone Number*</label>
                     <input
-                        type="tel"
+                        type="text"
                         name="phone"
                         value={form.phone}
                         onChange={handleChange}
+                        onInput={(e) => {
+                            e.target.value = e.target.value.replace(/\D/g, ''); // Hapus non-digit
+                        }}
+                        inputMode="numeric"
+                        pattern="\d*"
                         className="w-full border border-[#512260] rounded-lg p-3"
                         required
                     />

@@ -4,7 +4,7 @@ import calculatePrice from '../utils/pricing';
 
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-const useSubscriptionForm = () => {
+const useSubscriptionForm = (onSuccess) => {
     const [userName, setUserName] = useState('');
     const [form, setForm] = useState({
         phone: '',
@@ -100,7 +100,7 @@ const useSubscriptionForm = () => {
             );
 
             setAlreadySubscribed(true);
-            alert('Subscription submitted!');
+            if (typeof onSuccess === 'function') onSuccess();
         } catch (err) {
             console.error('Submit error:', err);
             alert(err?.response?.data?.message || 'Failed to submit. Try again.');
