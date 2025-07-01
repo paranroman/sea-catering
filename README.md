@@ -31,7 +31,7 @@ git clone https://github.com/paranroman/sea-catering.git
 
 Duplicate the folder via any terminal (recommended via github desktop) and select the path for the folder to be located
 
-### 2. Create .env file in /server
+### 2. Create .env file in /server (replace .env file if it already exists)
 
 ```bash
 DB_HOST=localhost
@@ -63,3 +63,21 @@ To login as admin:
 - Password: #Admin123
 
 This admin account is automatically created when you run npm run setup
+
+## For User & Admin Dashboard
+
+go to the subsciption page
+
+### For Admin
+
+- Not allowed to subscribe
+- Not allowed to send testimonial
+- Not allowed to edit profile
+- Only has Admin Dashboard at Subscription Page
+
+### For Users
+
+- There is a Form to subscribe
+- After subscribe automatically direct to the Subscription (User) Dasboard
+- User can send testimonial at home page
+- User can edit profile such a name, email, and phone number
