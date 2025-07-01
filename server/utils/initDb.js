@@ -47,7 +47,7 @@ const initDB = async () => {
         await connection.query(`
             CREATE TABLE IF NOT EXISTS testimonial (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                name VARCHAR(100) NOT NULL,
+                user_id INT,
                 message TEXT NOT NULL,
                 rating FLOAT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
