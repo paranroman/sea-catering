@@ -50,7 +50,7 @@ const initDB = async () => {
                 name VARCHAR(100) NOT NULL,
                 message TEXT NOT NULL,
                 rating FLOAT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             );
         `);
