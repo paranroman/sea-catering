@@ -51,6 +51,7 @@ const initDB = async () => {
                 message TEXT NOT NULL,
                 rating FLOAT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             );
         `);
 
