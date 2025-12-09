@@ -32,7 +32,7 @@ export const checkUserSubscription = async (req, res) => {
 
     try {
         const [subs] = await db.promise().query(
-            "SELECT id FROM subscription WHERE user_id = ? AND status = 'active' LIMIT 1",
+            "SELECT id FROM subscription WHERE user_id = ? AND status IN ('active', 'paused') LIMIT 1",
             [userId]
         );
 
@@ -88,8 +88,8 @@ export const resumeSubscription = async (req, res) => {
 
     try {
         await db.promise().query(
-            `UPDATE subscription 
-             SET status = 'active', resumed_at = NOW(), pause_start = NULL
+            `UPDATE subscription
+             SET status = 'active', resumed_at = NOW(), pause_start = NULL, pause_end = NULL
              WHERE user_id = ? AND status = 'paused'`,
             [userId]
         );

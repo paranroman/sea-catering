@@ -63,12 +63,6 @@ const SubscriptionForm = ({onSuccess}) => {
                 </div>
             )}
 
-            {alreadySubscribed && (
-                <div className="text-center font-medium text-red-500 border border-red-200 p-3 rounded-md bg-red-50">
-                    You have already subscribed. You cannot submit again.
-                </div>
-            )}
-
             {/* Full Name & Phone */}
             <div className="grid md:grid-cols-2 gap-6">
                 <div>

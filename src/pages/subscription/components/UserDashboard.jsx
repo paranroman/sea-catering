@@ -6,6 +6,21 @@ import {
     FaPause, FaPlay, FaTimes, FaDrumstickBite,
 } from 'react-icons/fa';
 
+const InfoCard = ({ icon: Icon, label, value }) => (
+    <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="bg-[#f9f2fb] border border-[#d4b5e4] rounded-xl p-4 flex items-center gap-4 shadow-sm"
+    >
+        <Icon className="text-2xl text-[#512260]" />
+        <div>
+            <p className="text-sm text-gray-600">{label}</p>
+            <p className="font-semibold text-[#512260]">{value}</p>
+        </div>
+    </motion.div>
+);
+
 const UserDashboard = ({ onCancelSuccess }) => {
     const [subscription, setSubscription] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -14,32 +29,62 @@ const UserDashboard = ({ onCancelSuccess }) => {
     const [showPauseForm, setShowPauseForm] = useState(false);
     const [pauseEnd, setPauseEnd] = useState('');
     const [infoMsg, setInfoMsg] = useState('');
-
     const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-    const fetchSubscription = async () => {
+    // --- PERBAIKAN DI SINI: LOGIKA RETRY FETCHING ---
+    useEffect(() => {
+        let isMounted = true;
+        let retryCount = 0;
+        const maxRetries = 5; // Coba ulang maksimal 5 kali
+
+        const fetchSubscription = async () => {
+            try {
+                const res = await axios.get('http://localhost:5000/api/subscription/user', {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                // Jika data kosong (DB belum siap) DAN masih punya sisa "nyawa" retry
+                if ((!res.data || res.data.length === 0) && retryCount < maxRetries) {
+                    retryCount++;
+                    console.log(`Data belum masuk DB, mencoba lagi... (${retryCount}/${maxRetries})`);
+                    setTimeout(fetchSubscription, 1000); 
+                    return; 
+                }
+
+                if (isMounted) {
+                    setSubscription(res.data[0] || null);
+                    setLoading(false);
+                }
+            } catch (err) {
+                console.error('Gagal fetch subscription:', err);
+                if (isMounted) setLoading(false);
+            }
+        };
+
+        fetchSubscription();
+
+        return () => { isMounted = false; };
+    }, [token]);
+
+    useEffect(() => {
+        if (infoMsg) {
+            const timer = setTimeout(() => setInfoMsg(''), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [infoMsg]);
+
+    const fetchAfterAction = async () => {
+
         try {
             const res = await axios.get('http://localhost:5000/api/subscription/user', {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setSubscription(res.data[0] || null);
-        } catch (err) {
-            console.error('Gagal fetch subscription:', err);
-        } finally {
-            setLoading(false);
-        }
+        } catch (err) { console.error(err); }
     };
 
-    useEffect(() => {
-        fetchSubscription();
-    }, []);
-
     const handlePause = async () => {
-        if (!pauseEnd) {
-            setInfoMsg("Harap isi tanggal akhir pause.");
-            return;
-        }
-
+        if (!pauseEnd) return setInfoMsg("Harap isi tanggal akhir pause.");
         try {
             const res = await axios.patch('http://localhost:5000/api/subscription/pause',
                 { pauseEnd },
@@ -48,10 +93,9 @@ const UserDashboard = ({ onCancelSuccess }) => {
             setInfoMsg(res.data.message);
             setShowPauseForm(false);
             setPauseEnd('');
-            fetchSubscription();
+            fetchAfterAction();
         } catch (err) {
             setInfoMsg("Gagal pause.");
-            console.error(err);
         }
     };
 
@@ -61,10 +105,9 @@ const UserDashboard = ({ onCancelSuccess }) => {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setInfoMsg(res.data.message);
-            fetchSubscription();
+            fetchAfterAction();
         } catch (err) {
             setInfoMsg("Gagal resume.");
-            console.error(err);
         }
     };
 
@@ -78,7 +121,6 @@ const UserDashboard = ({ onCancelSuccess }) => {
             if (typeof onCancelSuccess === 'function') onCancelSuccess();
         } catch (err) {
             setInfoMsg("Gagal cancel.");
-            console.error(err);
         }
     };
 
@@ -90,34 +132,37 @@ const UserDashboard = ({ onCancelSuccess }) => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 border border-[#bfa3d1]"
+            className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-8 border border-[#d6b1e5]"
         >
-            <h2 className="text-3xl font-bold text-[#512260] mb-6 text-center">
-                Your Active Subscription
-            </h2>
+            <h2 className="text-3xl font-bold text-[#512260] mb-6 text-center">Your Meal Plan Summary</h2>
 
-            <div className="space-y-4 text-[#512260] text-lg">
-                <div className="flex items-center gap-3"><FaUtensils className="text-xl" /><span><strong>Plan:</strong> {subscription.plan}</span></div>
-                <div className="flex items-center gap-3"><FaDrumstickBite className="text-xl" /><span><strong>Meals:</strong> {JSON.parse(subscription.meals).join(', ')}</span></div>
-                <div className="flex items-center gap-3"><FaCalendarAlt className="text-xl" /><span><strong>Delivery Days:</strong> {JSON.parse(subscription.delivery_days).join(', ')}</span></div>
-                <div className="flex items-center gap-3"><FaHeartbeat className="text-xl" /><span><strong>Allergies:</strong> {subscription.allergies || 'None'}</span></div>
-                <div className="flex items-center gap-3"><FaMoneyBill className="text-xl" /><span><strong>Total Price:</strong> Rp{subscription.total_price.toLocaleString('id-ID')}</span></div>
-                <div className="flex items-center gap-3">
-          <span className={`px-3 py-1 rounded-full text-sm font-semibold bg-opacity-20 ${subscription.status === 'active' ? 'bg-green-500 text-green-700' : 'bg-yellow-500 text-yellow-700'}`}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <InfoCard icon={FaUtensils} label="Plan" value={subscription.plan} />
+                <InfoCard icon={FaDrumstickBite} label="Meals" value={JSON.parse(subscription.meals).join(', ')} />
+                <InfoCard icon={FaCalendarAlt} label="Delivery Days" value={JSON.parse(subscription.delivery_days).join(', ')} />
+                <InfoCard icon={FaHeartbeat} label="Allergies" value={subscription.allergies || 'None'} />
+                <InfoCard icon={FaMoneyBill} label="Total Price" value={`Rp${subscription.total_price.toLocaleString('id-ID')}`} />
+                <InfoCard icon={FaPlay} label="Status" value={
+                    <span className={`px-2 py-1 text-sm rounded font-semibold ${subscription.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
             {subscription.status.toUpperCase()}
           </span>
-                </div>
+                } />
             </div>
 
             {infoMsg && (
-                <div className="text-center text-[#512260] bg-[#f4e7fa] border border-[#bfa3d1] rounded-md py-2 px-4 mt-6">
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="text-center text-[#512260] bg-[#f4e7fa] border border-[#bfa3d1] rounded-md py-2 px-4 mb-6"
+                >
                     {infoMsg}
-                </div>
+                </motion.div>
             )}
 
             {/* Pause Section */}
             {subscription.status === 'active' && !showPauseForm && (
-                <div className="mt-8 flex justify-center">
+                <div className="mt-6 flex justify-center">
                     <button
                         onClick={() => setShowPauseForm(true)}
                         className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-full transition"
@@ -128,7 +173,7 @@ const UserDashboard = ({ onCancelSuccess }) => {
             )}
 
             {subscription.status === 'active' && showPauseForm && (
-                <div className="mt-8 bg-[#f4e7fa] border border-[#bfa3d1] p-6 rounded-xl space-y-3">
+                <div className="mt-6 bg-[#f9f1fb] border border-[#d4b5e4] p-6 rounded-xl space-y-3">
                     <p className="text-center text-[#512260] font-medium">Pilih tanggal akhir pause:</p>
                     <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
                         <input
@@ -159,12 +204,12 @@ const UserDashboard = ({ onCancelSuccess }) => {
                 </div>
             )}
 
-            {/* Resume if paused */}
+            {/* Resume Section */}
             {subscription.status === 'paused' && (
-                <div className="mt-8 flex flex-col items-center gap-3">
+                <div className="mt-6 flex flex-col items-center gap-3">
                     <div className="text-center text-yellow-700 font-medium">
-                        Paused sejak: {new Date(subscription.pause_start).toLocaleDateString('id-ID')} <br />
-                        Sampai: {new Date(subscription.pause_end).toLocaleDateString('id-ID')}
+                        Pause Start: {new Date(subscription.pause_start).toLocaleDateString('id-ID')} <br />
+                        Pause End: {new Date(subscription.pause_end).toLocaleDateString('id-ID')}
                     </div>
                     <button
                         onClick={handleResume}

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { textVariant, fadeIn, staggerContainer } from '../../utils/motion';
+import { Link } from "react-router-dom";
+
 import SubscriptionForm from './components/SubscriptionForm';
 import UserDashboard from './components/UserDashboard';
 import AdminDashboard from './components/AdminDashboard';
@@ -71,7 +73,7 @@ const Subscription = () => {
                 variants={textVariant(0.2)}
                 className="text-4xl md:text-5xl font-bold font-cabin text-center text-[#512260] mb-16"
             >
-                {!user ? "Please login first" :
+                {!user ? "Subscription" :
                     user.role === 'admin' ? "Admin Dashboard" :
                         alreadySubscribed ? "Your Subscription Dashboard" : "Subscribe to a Meal Plan"
                 }
@@ -79,13 +81,22 @@ const Subscription = () => {
 
             <motion.div variants={fadeIn("up", 0.3)} className="z-10">
                 {!user ? (
-                    <p className="text-center text-[#512260] font-medium">Please login first.</p>
+                    <p className="text-center text-[#512260] font-medium">
+                        Please login first.{" "}
+                        <Link to="/login" className="text-[#8a4ca4] underline hover:text-[#512260] font-semibold">
+                            Click here to login
+                        </Link>
+                    </p>
+
                 ) : user.role === 'admin' ? (
                     <AdminDashboard />
                 ) : alreadySubscribed ? (
                     <UserDashboard onCancelSuccess={handleCancelSuccess} />
                 ) : (
-                    <SubscriptionForm onSuccess={() => setRefresh((prev) => !prev)} />
+                    <SubscriptionForm onSuccess={() => {
+                        setAlreadySubscribed(true); // <--- TAMBAHAN KRUSIAL: Langsung paksa jadi True
+                        setRefresh((prev) => !prev);
+                    }} />
                 )}
             </motion.div>
         </motion.section>
